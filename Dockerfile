@@ -14,4 +14,4 @@ RUN mkdir /work
 WORKDIR /work
 
 ENTRYPOINT ["/usr/local/bin/kubeseal"]
-CMD ["help"]
+CMD ["-h"]
