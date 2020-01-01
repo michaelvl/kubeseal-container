@@ -1,17 +1,18 @@
-FROM alpine:3.8
+FROM python:3.7.4-slim-stretch
 
-ARG KUBESEAL_VERSION
+ARG KUBESEAL_VERSION="v0.9.6"
 ENV KUBESEAL_VERSION=$KUBESEAL_VERSION
 
-RUN apk add --update ca-certificates && apk add --update -t deps curl \
-    && curl -sLo /usr/local/bin/kubeseal https://github.com/bitnami-labs/sealed-secrets/releases/download/${KUBESEAL_VERSION}/kubeseal-linux-amd64 \
-    && chmod +x /usr/local/bin/kubeseal \
-    && apk del --purge deps \
-    && rm /var/cache/apk/*
+RUN apt-get -y update && apt-get install -y curl && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-# Placeholder, mount folder containing manifest files
-RUN mkdir /work
-WORKDIR /work
+RUN curl -sLo /usr/local/bin/kubeseal https://github.com/bitnami-labs/sealed-secrets/releases/download/${KUBESEAL_VERSION}/kubeseal-linux-amd64 && chmod a+x /usr/local/bin/kubeseal
 
-ENTRYPOINT ["/usr/local/bin/kubeseal"]
-CMD ["-h"]
+#ADD requirements.txt .
+#RUN pip install -r ./requirements.txt
+
+RUN mkdir -p /bin /work
+WORKDIR "/work"
+COPY kubeseal.py /bin/
+
+ENTRYPOINT ["/bin/kubeseal.py"]
+CMD ["--format", "yaml"]
