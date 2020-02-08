@@ -5,7 +5,7 @@ jobs:
       - image: circleci/python:3.7.1
     environment:
       REPO: michaelvl/kubeseal
-      KUBESEAL_VERSION: "v0.9.6"
+      KUBESEAL_VERSION: "v0.9.7"
     steps:
       - checkout
       - setup_remote_docker
